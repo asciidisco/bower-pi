@@ -5,7 +5,7 @@ var rimraf = require('rimraf');
 module.exports = function () {
   var bowerContents;
   try {
-    bowerContents = require('./bower.json');
+    bowerContents = require(process.cwd() + path.sep + 'bower.json');
   } catch (e) {
     console.log('No bower.json meta file detected. I`m outta here');
     process.exit(128);
@@ -20,7 +20,7 @@ module.exports = function () {
   // laod the bower meta (in case the components directory differs from the default)
   var bowerMeta = {};
   try {
-    bowerMeta = JSON.parse(fs.readFileSync('./.bowerrc', 'utf-8'));
+    bowerMeta = JSON.parse(fs.readFileSync(process.cwd() + path.sep + '.bowerrc', 'utf-8'));
     bowerMeta.directory = bowerMeta.directory ? bowerMeta.directory : 'bower_components';
   } catch (e) {
     bowerMeta = {directory: 'bower_components'};
