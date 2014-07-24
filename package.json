@@ -1,0 +1,30 @@
+{
+  "name": "bower-pi",
+  "version": "0.0.1",
+  "description": "Validates bower dependency versions pre install",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "bower-pi": "./bin/cmd.js"
+  },  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asciidisco/bower-pi.git"
+  },
+  "keywords": [
+    "bower",
+    "pre-install"
+  ],
+  "author": "Sebastian Golasch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asciidisco/bower-pi/issues"
+  },
+  "homepage": "https://github.com/asciidisco/bower-pi",
+  "dependencies": {
+    "rimraf": "^2.2.8"
+  }
+}
