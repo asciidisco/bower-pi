@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
+var semver = require('semver');
 
 module.exports = function () {
   var bowerContents;
@@ -37,8 +38,11 @@ module.exports = function () {
   var validateDependency = function (dependency, basePath, metaData) {
     var depPath = basePath + path.sep + dependency;
     // nothing to do if the dependency folder does not exist  
-    if (!fs.existsSync(depPath)) return false;
-  
+    if (!fs.existsSync(depPath)) {
+      console.log('Dependency not found', dependency)
+      return false;
+    }
+    
     var meta;
     try {
       meta = require(depPath + path.sep + 'bower.json');
@@ -56,11 +60,12 @@ module.exports = function () {
     var requestedVersion = metaData;
     if (Array.isArray(_version) && _version.length === 2) {
       requestedVersion = _version[1];
+    } else {
+      equestedVersion = metaData
     }
-  
-    // check if requested version & installed version differ
-    // if so, kill installed version
-    if (requestedVersion !== meta.version) {
+
+    //!!semver.valid(requestedVersion)
+    if (requestedVersion !== meta.version || !semver.valid(requestedVersion)) {
       console.log('Mismatch detected:', dependency, 'Inst.:', meta.version, 'Req.:', requestedVersion, 'Cleaning up!');
       rimraf.sync(depPath);
     }
