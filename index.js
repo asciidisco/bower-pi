@@ -3,10 +3,10 @@ var path = require('path');
 var rimraf = require('rimraf');
 var semver = require('semver');
 
-module.exports = function () {
+module.exports = function (bowerFilePath) {
   var bowerContents;
   try {
-    bowerContents = require(process.cwd() + path.sep + 'bower.json');
+    bowerContents = require(process.cwd() + path.sep + bowerFilePath);
   } catch (e) {
     console.log('No bower.json meta file detected. I`m outta here');
     process.exit(128);
@@ -21,12 +21,11 @@ module.exports = function () {
   // laod the bower meta (in case the components directory differs from the default)
   var bowerMeta = {};
   try {
-    bowerMeta = JSON.parse(fs.readFileSync(process.cwd() + path.sep + '.bowerrc', 'utf-8'));
-    bowerMeta.directory = bowerMeta.directory ? bowerMeta.directory : 'bower_components';
+    bowerMeta = JSON.parse(fs.readFileSync(process.cwd() + path.sep + bowerFilePath.replace('bower.json', '') + '.bowerrc', 'utf-8'));
+    bowerMeta.directory = process.cwd() + path.sep + bowerFilePath.replace('bower.json', '') + (bowerMeta.directory ? bowerMeta.directory : 'bower_components');
   } catch (e) {
-    bowerMeta = {directory: 'bower_components'};
+    bowerMeta = {directory: process.cwd() + path.sep + bowerFilePath.replace('bower.json', '') + 'bower_components'};
   };
-
 
   // is there a components folder?, otherwise we can exit because we have nothing to do
   if(!fs.existsSync(bowerMeta.directory)) {
@@ -37,12 +36,12 @@ module.exports = function () {
   // validates a dependency
   var validateDependency = function (dependency, basePath, metaData) {
     var depPath = basePath + path.sep + dependency;
-    // nothing to do if the dependency folder does not exist  
+    // nothing to do if the dependency folder does not exist
     if (!fs.existsSync(depPath)) {
       console.log('Dependency not found', dependency)
       return false;
     }
-    
+
     var meta;
     try {
       meta = require(depPath + path.sep + 'bower.json');
@@ -54,7 +53,7 @@ module.exports = function () {
         process.exit(128);
       }
     }
-  
+
     // check if this is a tagged git repo, then split to get the version
     var _version = metaData.split('#');
     var requestedVersion = metaData;
